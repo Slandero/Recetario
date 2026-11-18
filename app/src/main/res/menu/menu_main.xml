@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accion_buscar"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/ic_buscar"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/buscar" />
+    <item
+        android:id="@+id/accion_planificador"
+        android:icon="@drawable/ic_calendario"
+        android:showAsAction="ifRoom"
+        android:title="@string/planificador" />
+    <item
+        android:id="@+id/accion_lista"
+        android:icon="@drawable/ic_carrito"
+        android:showAsAction="ifRoom"
+        android:title="@string/lista_ingredientes" />
+    <item
+        android:id="@+id/accion_ingredientes"
+        android:showAsAction="never"
+        android:title="@string/ingredientes" />
+    <item
+        android:id="@+id/accion_ajustes"
+        android:showAsAction="never"
+        android:title="@string/ajustes" />
+</menu>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- ================= Apariencia ================= -->
+        <TextView
+            style="@style/Texto.Seccion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/apariencia" />
+
+        <LinearLayout
+            style="@style/Tarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <Switch
+                android:id="@+id/swModoOscuro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/modo_oscuro"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp" />
+
+            <TextView
+                style="@style/Texto.Secundario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/modo_oscuro_desc" />
+        </LinearLayout>
+
+        <!-- ================= Recetas ================= -->
+        <TextView
+            style="@style/Texto.Seccion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/recetas" />
+
+        <LinearLayout
+            style="@style/Tarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/porciones_predeterminadas"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        style="@style/Texto.Secundario"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/porciones_predeterminadas_desc" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnMenos"
+                    style="@style/BotonCirculo"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="@string/menos_porciones"
+                    android:src="@drawable/ic_menos" />
+
+                <TextView
+                    android:id="@+id/tvPorciones"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/btnMas"
+                    style="@style/BotonCirculo"
+                    android:contentDescription="@string/mas_porciones"
+                    android:src="@drawable/ic_agregar" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="10dp"
+                android:background="?attr/colorDivisor" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ordenar_por"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp" />
+
+            <Spinner
+                android:id="@+id/spOrden"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="12dp"
+                android:background="?attr/colorDivisor" />
+
+            <Switch
+                android:id="@+id/swRecordarFiltros"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recordar_filtros"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp" />
+
+            <TextView
+                style="@style/Texto.Secundario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recordar_filtros_desc" />
+
+            <Button
+                android:id="@+id/btnBorrarFiltros"
+                style="@style/BotonTexto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-12dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/borrar_filtros" />
+        </LinearLayout>
+
+        <!-- ================= Archivos ================= -->
+        <TextView
+            style="@style/Texto.Seccion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/archivos" />
+
+        <LinearLayout
+            style="@style/Tarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvFotos"
+                style="@style/Texto.Secundario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true" />
+
+            <TextView
+                android:id="@+id/tvBaseDatos"
+                style="@style/Texto.Secundario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textIsSelectable="true" />
+
+            <Button
+                android:id="@+id/btnExportarTodo"
+                style="@style/BotonTexto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-12dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/exportar_todo" />
+        </LinearLayout>
+
+        <!-- ================= Acerca de ================= -->
+        <TextView
+            style="@style/Texto.Seccion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/acerca_de" />
+
+        <TextView
+            style="@style/Texto.Secundario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:lineSpacingExtra="2dp"
+            android:text="@string/acerca_texto" />
+    </LinearLayout>
+</ScrollView>

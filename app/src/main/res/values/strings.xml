@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Recetario México Típico</string>
+    <string name="recetario">Recetario</string>
+    <string name="mexico_tipico">México Típico · Delicias</string>
+
+    <!-- Pantalla principal -->
+    <string name="buscar">Buscar</string>
+    <string name="buscar_hint">Receta o ingrediente…</string>
+    <string name="todas_categorias">Todo el menú</string>
+    <string name="solo_favoritas">♥ Favoritas</string>
+    <string name="nueva_receta">Nueva receta</string>
+    <string name="vacio_recetas">Aún no hay recetas. Toca + para agregar la primera.</string>
+    <string name="vacio_filtros">No hay recetas con estos filtros.</string>
+    <string name="info_receta">%1$s · %2$d porc. · %3$d ingredientes</string>
+    <string name="marcar_favorita">Marcar como favorita</string>
+    <string name="quitar_favorita">Quitar de favoritas</string>
+    <string name="agregada_favoritas">Agregada a favoritas</string>
+    <string name="quitada_favoritas">Quitada de favoritas</string>
+    <string name="planificador">Planificador semanal</string>
+    <string name="lista_ingredientes">Lista de ingredientes</string>
+    <string name="ingredientes">Ingredientes</string>
+    <string name="ajustes">Ajustes</string>
+
+    <!-- Detalle -->
+    <string name="porciones">Porciones</string>
+    <string name="porciones_base">Receta original: %1$d porciones</string>
+    <string name="menos_porciones">Menos porciones</string>
+    <string name="mas_porciones">Más porciones</string>
+    <string name="preparacion">Preparación</string>
+    <string name="agregar_planificador">Agregar al planificador</string>
+    <string name="editar">Editar</string>
+    <string name="compartir">Compartir</string>
+    <string name="exportar_txt">Exportar a archivo .txt</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="eliminar_receta">Eliminar receta</string>
+    <string name="confirmar_eliminar">¿Eliminar \"%1$s\"? También se quita del planificador y se borra su foto.</string>
+    <string name="receta_eliminada">Receta eliminada</string>
+    <string name="compartir_receta">Compartir receta</string>
+    <string name="receta_exportada">Receta exportada</string>
+    <string name="error_exportar">No se pudo exportar: %1$s</string>
+    <string name="error_sin_app_archivos">No hay una app para guardar archivos</string>
+    <string name="hoy">Hoy</string>
+    <string name="manana">Mañana</string>
+    <string name="que_dia">¿Qué día?</string>
+    <string name="tiempo_ocupado">%1$s — ya tiene %2$s</string>
+    <string name="agregada_plan">Agregada: %1$s, %2$s</string>
+    <string name="foto_de_receta">Foto de la receta</string>
+
+    <!-- Formulario -->
+    <string name="editar_receta">Editar receta</string>
+    <string name="agregar_foto">Toca para agregar una foto</string>
+    <string name="nombre_receta">Nombre de la receta</string>
+    <string name="nombre_hint">Ej. Enchiladas suizas</string>
+    <string name="tipo_comida">Tipo de comida</string>
+    <string name="dificultad">Dificultad</string>
+    <string name="tiempo_min">Tiempo (min)</string>
+    <string name="agregar_ingrediente">+ Agregar</string>
+    <string name="ingrediente_hint">Ingrediente</string>
+    <string name="cantidad_hint">Cant.</string>
+    <string name="quitar_ingrediente">Quitar ingrediente</string>
+    <string name="preparacion_ayuda">Escribe cada paso en un renglón.</string>
+    <string name="preparacion_hint">1. Lava y pica…</string>
+    <string name="guardar">Guardar</string>
+    <string name="guardar_receta">Guardar receta</string>
+    <string name="foto_receta">Foto</string>
+    <string name="tomar_foto">Tomar foto</string>
+    <string name="elegir_galeria">Elegir de la galería</string>
+    <string name="quitar_foto">Quitar foto</string>
+    <string name="guardando_foto">Guardando foto…</string>
+    <string name="error_sin_camara">No hay una app de cámara</string>
+    <string name="error_sin_galeria">No hay una app para elegir imágenes</string>
+    <string name="error_foto">No se pudo guardar la foto</string>
+    <string name="error_nombre">Escribe el nombre de la receta</string>
+    <string name="error_porciones">Debe ser 1 o más</string>
+    <string name="error_ingrediente">Escribe el ingrediente</string>
+    <string name="error_cantidad">Escribe una cantidad mayor a 0</string>
+    <string name="error_sin_ingredientes">Agrega al menos un ingrediente</string>
+    <string name="error_preparacion">Escribe la preparación</string>
+    <string name="error_guardar">No se pudo guardar: %1$s</string>
+    <string name="receta_guardada">Receta guardada</string>
+
+    <!-- Planificador -->
+    <string name="semana_anterior">Semana anterior</string>
+    <string name="semana_siguiente">Semana siguiente</string>
+    <string name="generar_lista">Generar lista de ingredientes</string>
+    <string name="agregar_receta_plan">+ Agregar</string>
+    <string name="porciones_corto">%1$d porc.</string>
+    <string name="plan_vacio">Primero agrega comidas a esta semana</string>
+    <string name="plan_instrucciones">Toca un espacio para agregar una receta</string>
+    <string name="ver_receta">Ver receta</string>
+    <string name="cambiar_receta">Cambiar receta</string>
+    <string name="cambiar_porciones">Cambiar porciones (%1$d)</string>
+    <string name="quitar_del_plan">Quitar del planificador</string>
+    <string name="ir_a_hoy">Ir a esta semana</string>
+    <string name="vaciar_semana">Vaciar semana</string>
+    <string name="vaciar">Vaciar</string>
+    <string name="confirmar_vaciar">Se quitan todas las comidas de esta semana. Las recetas no se borran.</string>
+
+    <!-- Lista de ingredientes -->
+    <string name="semana_de">Semana %1$s</string>
+    <string name="resumen_lista">Comidas: %1$d · Ingredientes: %2$d · Comprados: %3$d</string>
+    <string name="lista_sin_comidas">No hay comidas planeadas en esta semana. Agrégalas en el planificador.</string>
+    <string name="lista_vacia">La lista está vacía</string>
+    <string name="compartir_lista">Compartir lista</string>
+    <string name="exportar_lista">Exportar a .txt</string>
+    <string name="desmarcar_todo">Desmarcar todo</string>
+    <string name="lista_exportada">Lista exportada</string>
+
+    <!-- Ingredientes -->
+    <string name="buscar_ingrediente">Buscar ingrediente…</string>
+    <string name="sin_ingredientes">No se encontraron ingredientes.</string>
+    <string name="ingrediente_sin_recetas">Ninguna receta usa este ingrediente</string>
+    <string name="recetas_con">Recetas con %1$s</string>
+    <string name="cerrar">Cerrar</string>
+
+    <!-- Ajustes -->
+    <string name="apariencia">Apariencia</string>
+    <string name="modo_oscuro">Modo oscuro</string>
+    <string name="modo_oscuro_desc">Colores oscuros para la cocina de noche</string>
+    <string name="recetas">Recetas</string>
+    <string name="porciones_predeterminadas">Porciones predeterminadas</string>
+    <string name="porciones_predeterminadas_desc">Con estas se abren las recetas y se planean las comidas</string>
+    <string name="ordenar_por">Ordenar recetas por</string>
+    <string name="recordar_filtros">Recordar filtros de búsqueda</string>
+    <string name="recordar_filtros_desc">Al abrir la app se aplican los últimos filtros</string>
+    <string name="borrar_filtros">Borrar filtros guardados</string>
+    <string name="filtros_borrados">Filtros borrados</string>
+    <string name="archivos">Archivos</string>
+    <string name="info_fotos">Fotos guardadas: %1$d (%2$s)\n%3$s</string>
+    <string name="info_bd">Base de datos SQLite: %1$s\n%2$s</string>
+    <string name="exportar_todo">Exportar todas las recetas (.json)</string>
+    <string name="recetas_exportadas">Recetas exportadas</string>
+    <string name="acerca_de">Acerca de</string>
+    <string name="acerca_texto">Recetario México Típico 1.0\nProyecto 4 · Persistencia de datos en Android\nCristian Alexis Cruz De La Paz</string>
+
+    <plurals name="num_recetas">
+        <item quantity="one">%d receta</item>
+        <item quantity="many">%d recetas</item>
+        <item quantity="other">%d recetas</item>
+    </plurals>
+    <plurals name="num_ingredientes">
+        <item quantity="one">%d ingrediente</item>
+        <item quantity="many">%d ingredientes</item>
+        <item quantity="other">%d ingredientes</item>
+    </plurals>
+    <plurals name="num_comidas">
+        <item quantity="one">%d comida planeada</item>
+        <item quantity="many">%d comidas planeadas</item>
+        <item quantity="other">%d comidas planeadas</item>
+    </plurals>
+</resources>

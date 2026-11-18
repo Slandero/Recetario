@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="14dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tvNumero"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@drawable/bg_numero_paso"
+        android:gravity="center"
+        android:textColor="?android:attr/colorBackground"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvPaso"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_weight="1"
+        android:lineSpacingExtra="3dp"
+        android:paddingTop="3dp"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="15sp" />
+</LinearLayout>

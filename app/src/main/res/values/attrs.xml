@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colores que cambian entre el tema claro y el oscuro -->
+    <attr name="colorTarjeta" format="color" />
+    <attr name="colorTextoSecundario" format="color" />
+    <attr name="colorDivisor" format="color" />
+    <attr name="colorIcono" format="color" />
+    <attr name="colorFavorito" format="color" />
+    <attr name="colorChip" format="color" />
+</resources>

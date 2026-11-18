@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ===================== Tema claro ===================== -->
+    <style name="Tema.Recetario" parent="android:Theme.Material.Light">
+        <item name="android:colorPrimary">@color/crema</item>
+        <item name="android:colorPrimaryDark">@color/crema</item>
+        <item name="android:colorAccent">@color/morado</item>
+        <item name="android:windowBackground">@color/crema</item>
+        <item name="android:colorBackground">@color/crema</item>
+        <item name="android:statusBarColor">@color/crema</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:actionBarStyle">@style/BarraAccion</item>
+        <item name="android:alertDialogTheme">@style/Dialogo</item>
+        <item name="colorTarjeta">@color/blanco</item>
+        <item name="colorTextoSecundario">@color/texto2_claro</item>
+        <item name="colorDivisor">@color/divisor_claro</item>
+        <item name="colorIcono">@color/morado</item>
+        <item name="colorFavorito">@color/coral</item>
+        <item name="colorChip">@color/chip_claro</item>
+    </style>
+
+    <style name="BarraAccion" parent="android:Widget.Material.Light.ActionBar.Solid">
+        <item name="android:background">@color/crema</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:titleTextStyle">@style/BarraAccion.Titulo</item>
+    </style>
+
+    <style name="BarraAccion.Titulo" parent="android:TextAppearance.Material.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/morado</item>
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Dialogo" parent="android:Theme.Material.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/morado</item>
+        <item name="colorTarjeta">@color/blanco</item>
+        <item name="colorTextoSecundario">@color/texto2_claro</item>
+        <item name="colorDivisor">@color/divisor_claro</item>
+        <item name="colorIcono">@color/morado</item>
+        <item name="colorFavorito">@color/coral</item>
+        <item name="colorChip">@color/chip_claro</item>
+    </style>
+
+    <!-- ===================== Tema oscuro ===================== -->
+    <style name="Tema.Recetario.Oscuro" parent="android:Theme.Material">
+        <item name="android:colorPrimary">@color/fondo_oscuro</item>
+        <item name="android:colorPrimaryDark">@color/fondo_oscuro</item>
+        <item name="android:colorAccent">@color/lavanda</item>
+        <item name="android:windowBackground">@color/fondo_oscuro</item>
+        <item name="android:colorBackground">@color/fondo_oscuro</item>
+        <item name="android:statusBarColor">@color/fondo_oscuro</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:actionBarStyle">@style/BarraAccion.Oscura</item>
+        <item name="android:alertDialogTheme">@style/Dialogo.Oscuro</item>
+        <item name="colorTarjeta">@color/tarjeta_oscuro</item>
+        <item name="colorTextoSecundario">@color/texto2_oscuro</item>
+        <item name="colorDivisor">@color/divisor_oscuro</item>
+        <item name="colorIcono">@color/lavanda</item>
+        <item name="colorFavorito">@color/coral_claro</item>
+        <item name="colorChip">@color/chip_oscuro</item>
+    </style>
+
+    <style name="BarraAccion.Oscura" parent="android:Widget.Material.ActionBar.Solid">
+        <item name="android:background">@color/fondo_oscuro</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:titleTextStyle">@style/BarraAccion.Titulo.Oscuro</item>
+    </style>
+
+    <style name="BarraAccion.Titulo.Oscuro" parent="android:TextAppearance.Material.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/lavanda</item>
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Dialogo.Oscuro" parent="android:Theme.Material.Dialog.Alert">
+        <item name="android:colorAccent">@color/lavanda</item>
+        <item name="colorTarjeta">@color/tarjeta_oscuro</item>
+        <item name="colorTextoSecundario">@color/texto2_oscuro</item>
+        <item name="colorDivisor">@color/divisor_oscuro</item>
+        <item name="colorIcono">@color/lavanda</item>
+        <item name="colorFavorito">@color/coral_claro</item>
+        <item name="colorChip">@color/chip_oscuro</item>
+    </style>
+
+    <!-- ===================== Estilos de texto y vistas ===================== -->
+    <style name="Texto" />
+
+    <style name="Texto.Titulo">
+        <item name="android:textSize">26sp</item>
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="Texto.Seccion">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textColor">?android:attr/colorAccent</item>
+    </style>
+
+    <style name="Texto.Etiqueta">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">?attr/colorTextoSecundario</item>
+        <item name="android:layout_marginTop">14dp</item>
+    </style>
+
+    <style name="Texto.Secundario">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">?attr/colorTextoSecundario</item>
+    </style>
+
+    <style name="Tarjeta">
+        <item name="android:background">@drawable/bg_tarjeta</item>
+        <item name="android:elevation">1dp</item>
+    </style>
+
+    <style name="BotonPrincipal" parent="android:Widget.Material.Button.Colored">
+        <item name="android:minHeight">52dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BotonTexto" parent="android:Widget.Material.Button.Borderless.Colored">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BotonCirculo">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/bg_boton_circulo</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:tint">?android:attr/colorAccent</item>
+    </style>
+</resources>

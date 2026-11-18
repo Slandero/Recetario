@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accion_hoy"
+        android:showAsAction="never"
+        android:title="@string/ir_a_hoy" />
+    <item
+        android:id="@+id/accion_vaciar"
+        android:showAsAction="never"
+        android:title="@string/vaciar_semana" />
+</menu>
