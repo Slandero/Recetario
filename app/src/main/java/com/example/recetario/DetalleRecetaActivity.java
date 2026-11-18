@@ -61,6 +61,10 @@ public class DetalleRecetaActivity extends BaseActivity {
     private LinearLayout contIngredientes;
     private LinearLayout contPasos;
 
+    /**
+     * Inicializa la actividad de detalle, recupera el ID de la receta y configura listeners.
+     * @param savedInstanceState Estado guardado de porciones previamente ajustadas.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +74,6 @@ public class DetalleRecetaActivity extends BaseActivity {
         planDao = new PlanDao(this);
         recetaId = getIntent().getLongExtra(EXTRA_ID, -1);
 
-        // Preferencias: las porciones con las que se abre la receta
         porciones = savedInstanceState != null
                 ? savedInstanceState.getInt(ESTADO_PORCIONES, prefs.getPorciones())
                 : prefs.getPorciones();
@@ -110,12 +113,18 @@ public class DetalleRecetaActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Carga y refresca los datos de la receta al volver a la pantalla.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         cargar();
     }
 
+    /**
+     * Obtiene los datos completos de la receta de la BD y actualiza las vistas de foto, información, ingredientes y pasos.
+     */
     private void cargar() {
         receta = dao.obtener(recetaId);
         if (receta == null) {
@@ -151,12 +160,18 @@ public class DetalleRecetaActivity extends BaseActivity {
         invalidateOptionsMenu();
     }
 
+    /**
+     * Actualiza el valor de porciones deseadas dentro de los límites válidos.
+     * @param nuevas Nuevo número de porciones.
+     */
     private void cambiarPorciones(int nuevas) {
         porciones = Math.max(Preferencias.PORCIONES_MIN, Math.min(Preferencias.PORCIONES_MAX, nuevas));
         mostrarIngredientes();
     }
 
-    /** Cada cantidad se multiplica por porciones elegidas / porciones de la receta. */
+    /**
+     * Recalcula y muestra las cantidades de cada ingrediente escaladas según las porciones elegidas.
+     */
     private void mostrarIngredientes() {
         tvPorciones.setText(String.valueOf(porciones));
         btnMenos.setEnabled(porciones > Preferencias.PORCIONES_MIN);
@@ -178,6 +193,9 @@ public class DetalleRecetaActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Infla y enumera los pasos del procedimiento de preparación.
+     */
     private void mostrarPasos() {
         contPasos.removeAllViews();
         LayoutInflater inflater = getLayoutInflater();
@@ -192,6 +210,9 @@ public class DetalleRecetaActivity extends BaseActivity {
 
     // ------------------------------------------------------------------ planificador
 
+    /**
+     * Muestra un diálogo para elegir el día de la semana al agregar la receta al planificador.
+     */
     private void elegirDia() {
         final String[] fechas = new String[7];
         String[] etiquetas = new String[7];
@@ -220,6 +241,10 @@ public class DetalleRecetaActivity extends BaseActivity {
                 .show();
     }
 
+    /**
+     * Muestra un diálogo para seleccionar el tiempo de comida (Desayuno, Comida, Cena) al agendar la receta.
+     * @param fecha Fecha elegida (YYYY-MM-DD).
+     */
     private void elegirTiempo(final String fecha) {
         String[] ocupados = planDao.recetasDelDia(fecha);
         String[] etiquetas = new String[3];
@@ -243,12 +268,22 @@ public class DetalleRecetaActivity extends BaseActivity {
 
     // ------------------------------------------------------------------ menú
 
+    /**
+     * Infla el menú de opciones superior de la pantalla de detalle.
+     * @param menu Objeto Menu.
+     * @return true para mostrarlo.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detalle, menu);
         return true;
     }
 
+    /**
+     * Actualiza dinámicamente el ícono de favorita en la barra superior.
+     * @param menu Objeto Menu.
+     * @return true si fue procesado.
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem fav = menu.findItem(R.id.accion_favorita);
@@ -259,6 +294,11 @@ public class DetalleRecetaActivity extends BaseActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    /**
+     * Maneja las acciones del menú superior (favorita, editar, compartir, exportar a txt, eliminar).
+     * @param item Elemento de menú presionado.
+     * @return true si fue procesado.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (receta == null) {
@@ -300,6 +340,9 @@ public class DetalleRecetaActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Muestra un diálogo de confirmación antes de eliminar la receta de la base de datos.
+     */
     private void confirmarEliminar() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.eliminar_receta)
@@ -317,13 +360,18 @@ public class DetalleRecetaActivity extends BaseActivity {
                 .show();
     }
 
+    /**
+     * Recibe la URI seleccionada por el usuario para guardar el archivo exportado en .txt.
+     * @param requestCode Código de solicitud.
+     * @param resultCode Resultado de la actividad.
+     * @param data Intent con la URI seleccionada.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_EXPORTAR && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri destino = data.getData();
             if (receta == null) {
-                // Si Android cerró la app mientras se elegía el archivo, se vuelve a leer la receta
                 receta = dao.obtener(recetaId);
                 if (receta == null) {
                     return;
@@ -338,6 +386,10 @@ public class DetalleRecetaActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Preserva el número de porciones seleccionadas ante giros de pantalla.
+     * @param outState Bundle de salida.
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

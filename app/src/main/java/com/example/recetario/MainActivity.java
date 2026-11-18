@@ -35,6 +35,10 @@ public class MainActivity extends BaseActivity implements RecetaAdapter.OnFavori
     private TextView tvVacio;
     private String textoBusqueda = "";
 
+    /**
+     * Inicializa la interfaz principal, configura la lista de recetas y asigna eventos de clic y creación.
+     * @param savedInstanceState Estado guardado previa recreación.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,11 +81,18 @@ public class MainActivity extends BaseActivity implements RecetaAdapter.OnFavori
         configurarFiltros();
     }
 
+    /**
+     * Inhabilita la flecha de regreso en la pantalla principal.
+     * @return false indicando que no hay botón de retorno en el ActionBar.
+     */
     @Override
     protected boolean mostrarRegresar() {
         return false;
     }
 
+    /**
+     * Carga los adaptadores de categorías y dificultad, aplicando las preferencias del usuario si están activas.
+     */
     private void configurarFiltros() {
         List<Categoria> opciones = new ArrayList<>();
         opciones.add(new Categoria(-1, getString(R.string.todas_categorias), null));
@@ -95,7 +106,6 @@ public class MainActivity extends BaseActivity implements RecetaAdapter.OnFavori
         adDificultad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spDificultad.setAdapter(adDificultad);
 
-        // Preferencias: se restauran los filtros que el usuario dejó la última vez
         if (prefs.isRecordarFiltros()) {
             long categoriaGuardada = prefs.getFiltroCategoria();
             for (int i = 0; i < opciones.size(); i++) {
@@ -130,22 +140,35 @@ public class MainActivity extends BaseActivity implements RecetaAdapter.OnFavori
         });
     }
 
+    /**
+     * Notifica el cambio en la selección de los filtros, guardando las preferencias y recargando la lista.
+     */
     private void filtrosCambiaron() {
         prefs.guardarFiltros(categoriaElegida(), spDificultad.getSelectedItemPosition(), cbFavoritas.isChecked());
         cargar();
     }
 
+    /**
+     * Obtiene el ID de la categoría actualmente seleccionada en el Spinner.
+     * @return ID de la categoría (-1 si es "Todas").
+     */
     private long categoriaElegida() {
         Categoria c = (Categoria) spCategoria.getSelectedItem();
         return c == null ? -1 : c.id;
     }
 
+    /**
+     * Recarga los datos de la lista al volver a la pantalla.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         cargar();
     }
 
+    /**
+     * Consulta las recetas a la base de datos aplicando los filtros y texto de búsqueda actuales.
+     */
     private void cargar() {
         List<Receta> recetas = dao.buscar(textoBusqueda, categoriaElegida(),
                 spDificultad.getSelectedItemPosition(), cbFavoritas.isChecked(), prefs.getOrden());
@@ -157,6 +180,10 @@ public class MainActivity extends BaseActivity implements RecetaAdapter.OnFavori
         tvVacio.setText(hayFiltros ? R.string.vacio_filtros : R.string.vacio_recetas);
     }
 
+    /**
+     * Maneja el evento de marcar/desmarcar receta favorita desde el botón de la tarjeta en la lista.
+     * @param receta Receta que fue marcada/desmarcada.
+     */
     @Override
     public void onFavorita(Receta receta) {
         boolean ahora = dao.alternarFavorita(receta.id);
@@ -164,6 +191,11 @@ public class MainActivity extends BaseActivity implements RecetaAdapter.OnFavori
         cargar();
     }
 
+    /**
+     * Infla el menú de opciones superior y configura la barra de búsqueda (SearchView).
+     * @param menu Menú a inflar.
+     * @return true para mostrar el menú.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -191,6 +223,11 @@ public class MainActivity extends BaseActivity implements RecetaAdapter.OnFavori
         return true;
     }
 
+    /**
+     * Maneja la navegación a las pantallas del planificador, lista de compras, catálogo de ingredientes y ajustes.
+     * @param item Elemento de menú seleccionado.
+     * @return true si fue procesado.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -210,6 +247,10 @@ public class MainActivity extends BaseActivity implements RecetaAdapter.OnFavori
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Preserva el estado de la búsqueda en cambios de orientación.
+     * @param outState Bundle de salida.
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

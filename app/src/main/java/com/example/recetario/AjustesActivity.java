@@ -33,6 +33,10 @@ public class AjustesActivity extends BaseActivity {
     private ImageButton btnMenos;
     private ImageButton btnMas;
 
+    /**
+     * Inicializa la vista de ajustes, asigna listeners para switches de modo oscuro/filtros y exportación JSON.
+     * @param savedInstanceState Estado guardado.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +50,7 @@ public class AjustesActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 prefs.setModoOscuro(isChecked);
-                recreate(); // se vuelve a crear la pantalla con el otro tema
+                recreate();
             }
         });
 
@@ -122,12 +126,18 @@ public class AjustesActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Refresca las métricas de almacenamiento al volver a la pantalla.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         mostrarAlmacenamiento();
     }
 
+    /**
+     * Muestra en pantalla el valor de porciones predeterminadas y habilita/deshabilita los botones + y -.
+     */
     private void mostrarPorciones() {
         int p = prefs.getPorciones();
         tvPorciones.setText(String.valueOf(p));
@@ -137,6 +147,9 @@ public class AjustesActivity extends BaseActivity {
         btnMas.setAlpha(btnMas.isEnabled() ? 1f : 0.35f);
     }
 
+    /**
+     * Muestra las estadísticas de fotos almacenadas (conteo y peso en MB/KB) y el peso del archivo SQLite.
+     */
     private void mostrarAlmacenamiento() {
         File carpeta = FotoStorage.carpeta(this);
         File bd = getDatabasePath(RecetarioDbHelper.NOMBRE_BD);
@@ -149,6 +162,12 @@ public class AjustesActivity extends BaseActivity {
                 bd.getAbsolutePath()));
     }
 
+    /**
+     * Recibe la URI seleccionada por el usuario para exportar el respaldo completo de recetas en JSON.
+     * @param requestCode Código de solicitud.
+     * @param resultCode Resultado de la operación.
+     * @param data Intent con la URI elegida.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

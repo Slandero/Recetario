@@ -42,6 +42,10 @@ public class ListaIngredientesActivity extends BaseActivity {
     private ProgressBar pbAvance;
     private ItemsAdapter adapter;
 
+    /**
+     * Inicializa la vista de la lista de compras, configura el ListView y los eventos de tachado de insumos.
+     * @param savedInstanceState Estado guardado.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +72,6 @@ public class ListaIngredientesActivity extends BaseActivity {
                 if (!marcados.remove(clave)) {
                     marcados.add(clave);
                 }
-                // Preferencias: se guarda qué ingredientes ya se compraron en esta semana
                 prefs.setMarcados(lunes, marcados);
                 adapter.notifyDataSetChanged();
                 actualizarResumen();
@@ -76,12 +79,18 @@ public class ListaIngredientesActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Carga y refresca los datos de la lista de ingredientes al volver a la pantalla.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         cargar();
     }
 
+    /**
+     * Consulta las comidas planificadas en la semana, agrupa sus ingredientes y recupera los elementos tachados.
+     */
     private void cargar() {
         items = ListaCompras.agrupar(planDao.ingredientesSemana(lunes));
         marcados = prefs.getMarcados(lunes);
@@ -90,6 +99,10 @@ public class ListaIngredientesActivity extends BaseActivity {
         actualizarResumen();
     }
 
+    /**
+     * Cuenta el número de ingredientes marcados como comprados.
+     * @return Cantidad de insumos comprados.
+     */
     private int comprados() {
         int n = 0;
         for (ListaCompras.Item it : items) {
@@ -100,6 +113,9 @@ public class ListaIngredientesActivity extends BaseActivity {
         return n;
     }
 
+    /**
+     * Actualiza la etiqueta de resumen y la barra de progreso de compras.
+     */
     private void actualizarResumen() {
         int comprados = comprados();
         tvResumen.setText(getString(R.string.resumen_lista, numComidas, items.size(), comprados));
@@ -108,16 +124,30 @@ public class ListaIngredientesActivity extends BaseActivity {
         pbAvance.setVisibility(items.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
+    /**
+     * Genera la etiqueta del título de la semana actual.
+     * @return Título de la semana.
+     */
     private String titulo() {
         return getString(R.string.semana_de, Semana.etiqueta(lunes));
     }
 
+    /**
+     * Infla el menú de opciones de la lista de compras (Compartir, Exportar .txt, Desmarcar todo).
+     * @param menu Objeto Menu.
+     * @return true para mostrar el menú.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_lista, menu);
         return true;
     }
 
+    /**
+     * Maneja las opciones del menú de la lista de ingredientes.
+     * @param item Elemento de menú seleccionado.
+     * @return true si fue procesado.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -155,6 +185,12 @@ public class ListaIngredientesActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Escribe el texto de la lista de compras en la URI seleccionada por el usuario (SAF).
+     * @param requestCode Código de solicitud.
+     * @param resultCode Código de resultado.
+     * @param data Intent con la URI seleccionada.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -171,6 +207,7 @@ public class ListaIngredientesActivity extends BaseActivity {
         }
     }
 
+    /** Adaptador para renderizar cada ítem de la lista de compras con casilla y tachado. */
     private class ItemsAdapter extends BaseAdapter {
 
         @Override

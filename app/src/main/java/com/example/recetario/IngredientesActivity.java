@@ -30,6 +30,10 @@ public class IngredientesActivity extends BaseActivity {
     private List<IngredienteCatalogo> ingredientes = new ArrayList<>();
     private CatalogoAdapter adapter;
 
+    /**
+     * Inicializa la vista del catálogo de ingredientes, su ListView y el listener del cuadro de búsqueda.
+     * @param savedInstanceState Estado guardado.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +70,18 @@ public class IngredientesActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Carga y refresca los datos del catálogo al volver a la pantalla.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         cargar();
     }
 
+    /**
+     * Consulta el catálogo de ingredientes en la BD aplicando el texto del filtro actual.
+     */
     private void cargar() {
         ingredientes = dao.catalogo(etBuscar.getText().toString());
         adapter.notifyDataSetChanged();
@@ -79,6 +89,10 @@ public class IngredientesActivity extends BaseActivity {
                 R.plurals.num_ingredientes, ingredientes.size(), ingredientes.size()));
     }
 
+    /**
+     * Muestra un diálogo emergente con la lista de recetas que contienen el ingrediente seleccionado.
+     * @param ing Objeto IngredienteCatalogo seleccionado.
+     */
     private void mostrarRecetas(IngredienteCatalogo ing) {
         final List<Receta> recetas = dao.recetasConIngrediente(ing.id);
         if (recetas.isEmpty()) {
@@ -103,6 +117,7 @@ public class IngredientesActivity extends BaseActivity {
                 .show();
     }
 
+    /** Adaptador para renderizar cada ingrediente del catálogo en la lista. */
     private class CatalogoAdapter extends BaseAdapter {
 
         @Override

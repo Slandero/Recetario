@@ -25,6 +25,11 @@ public class Receta {
     public int numIngredientes;
     public List<IngredienteReceta> ingredientes = new ArrayList<>();
 
+    /**
+     * Retorna la representación en texto legible de la dificultad numérica de la receta.
+     * @param dificultad Nivel numérico (1: Fácil, 2: Media, 3: Difícil).
+     * @return Cadena con el texto descriptivo del nivel de dificultad.
+     */
     public static String textoDificultad(int dificultad) {
         switch (dificultad) {
             case FACIL:
@@ -38,7 +43,11 @@ public class Receta {
         }
     }
 
-    /** Cada renglón de la preparación es un paso. */
+    /**
+     * Divide el texto de preparación en una lista de pasos individuales separando por saltos de línea.
+     * Omite líneas en blanco.
+     * @return Lista de cadenas, donde cada elemento representa un paso del procedimiento.
+     */
     public List<String> pasos() {
         List<String> pasos = new ArrayList<>();
         if (preparacion != null) {
@@ -52,6 +61,10 @@ public class Receta {
         return pasos;
     }
 
+    /**
+     * Retorna el nombre de la receta como representación en cadena.
+     * @return Nombre de la receta.
+     */
     @Override
     public String toString() {
         return nombre;

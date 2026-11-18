@@ -14,17 +14,28 @@ import com.example.recetario.util.Preferencias;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Consultas y cambios de recetas, ingredientes y favoritos. */
+/**
+ * Objeto de Acceso a Datos (DAO) para realizar consultas, inserciones, modificaciones
+ * y eliminaciones en las tablas de recetas, categorías, ingredientes y favoritos.
+ */
 public class RecetaDao {
 
     private final RecetarioDbHelper helper;
 
+    /**
+     * Constructor del DAO que inicializa el ayudante de base de datos Singleton.
+     * @param c Contexto de la aplicación.
+     */
     public RecetaDao(Context c) {
         helper = RecetarioDbHelper.get(c);
     }
 
     // ------------------------------------------------------------------ categorías
 
+    /**
+     * Obtiene la lista completa de categorías de la base de datos ordenadas por ID.
+     * @return Lista de objetos Categoria.
+     */
     public List<Categoria> categorias() {
         List<Categoria> lista = new ArrayList<>();
         try (Cursor c = helper.getReadableDatabase().rawQuery(
@@ -48,8 +59,14 @@ public class RecetaDao {
                     + "LEFT JOIN favoritos f ON f.receta_id = r.id ";
 
     /**
-     * Lista de recetas con filtros. El texto busca en el nombre de la receta
-     * y también en los nombres de sus ingredientes.
+     * Busca y filtra recetas en la base de datos según criterios de búsqueda textual, categoría, dificultad o favoritos.
+     * El texto busca por coincidencia parcial tanto en el nombre de la receta como en sus ingredientes.
+     * @param texto Texto de búsqueda (nombre o ingrediente).
+     * @param categoriaId ID de la categoría seleccionada (-1 para todas).
+     * @param dificultad Nivel de dificultad (0 para todas).
+     * @param soloFavoritas Si es true, solo retorna recetas marcadas como favoritas.
+     * @param orden Criterio de ordenamiento (nombre, fecha de creación o tiempo).
+     * @return Lista de recetas filtradas.
      */
     public List<Receta> buscar(String texto, long categoriaId, int dificultad, boolean soloFavoritas, int orden) {
         StringBuilder sql = new StringBuilder(SELECT_RESUMEN).append("WHERE 1 = 1 ");
@@ -94,10 +111,20 @@ public class RecetaDao {
         return lista;
     }
 
+    /**
+     * Escapa caracteres especiales (%, _, \) para usar en cláusulas SQL LIKE.
+     * @param s Cadena original.
+     * @return Cadena escapada.
+     */
     private static String escaparLike(String s) {
         return s.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
     }
 
+    /**
+     * Convierte la fila actual de un Cursor en un objeto Receta con sus datos básicos.
+     * @param c Cursor posicionado en la fila actual.
+     * @return Objeto Receta cargado.
+     */
     private static Receta leerResumen(Cursor c) {
         Receta r = new Receta();
         r.id = c.getLong(0);
@@ -117,7 +144,11 @@ public class RecetaDao {
 
     // ------------------------------------------------------------------ detalle
 
-    /** Receta completa con sus ingredientes (JOIN de 2 tablas). */
+    /**
+     * Obtiene una receta completa por su ID, incluyendo sus instrucciones de preparación e ingredientes asociados.
+     * @param id ID de la receta.
+     * @return Objeto Receta completo o null si no se encuentra.
+     */
     public Receta obtener(long id) {
         SQLiteDatabase db = helper.getReadableDatabase();
         Receta r;
@@ -137,6 +168,12 @@ public class RecetaDao {
         return r;
     }
 
+    /**
+     * Obtiene la lista de ingredientes asociados a una receta desde la tabla intermedia receta_ingrediente.
+     * @param db Instancia de la base de datos en modo lectura.
+     * @param recetaId ID de la receta.
+     * @return Lista de IngredienteReceta.
+     */
     private List<IngredienteReceta> ingredientesDe(SQLiteDatabase db, long recetaId) {
         List<IngredienteReceta> lista = new ArrayList<>();
         try (Cursor c = db.rawQuery(
@@ -158,7 +195,10 @@ public class RecetaDao {
         return lista;
     }
 
-    /** Todas las recetas completas (para exportarlas). */
+    /**
+     * Obtiene la lista completa de todas las recetas almacenadas con sus ingredientes e instrucciones (para exportar a JSON).
+     * @return Lista de todas las recetas completas.
+     */
     public List<Receta> todasCompletas() {
         List<Receta> resumen = buscar(null, -1, 0, false, Preferencias.ORDEN_NOMBRE);
         List<Receta> completas = new ArrayList<>();
@@ -171,8 +211,9 @@ public class RecetaDao {
     // ------------------------------------------------------------------ guardar / eliminar
 
     /**
-     * Inserta o actualiza una receta junto con sus ingredientes en una sola transacción:
-     * si algo falla no queda la receta a medias.
+     * Inserta o actualiza una receta junto con sus ingredientes dentro de una transacción atómica.
+     * @param r Objeto Receta a guardar.
+     * @return El ID generado o actualizado de la receta.
      */
     public long guardar(Receta r) {
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -220,9 +261,14 @@ public class RecetaDao {
         }
     }
 
+    /**
+     * Busca un ingrediente por nombre o lo inserta en el catálogo si no existe (evita duplicados insensible a mayúsculas).
+     * @param db Instancia de la base de datos en modo escritura.
+     * @param nombre Nombre del ingrediente.
+     * @return El ID del ingrediente existente o recién creado.
+     */
     private long obtenerOCrearIngrediente(SQLiteDatabase db, String nombre) {
         String limpio = nombre.trim();
-        // La columna tiene COLLATE NOCASE, así que "ajo" y "Ajo" son el mismo ingrediente
         try (Cursor c = db.rawQuery("SELECT id FROM ingredientes WHERE nombre = ?", new String[]{limpio})) {
             if (c.moveToFirst()) {
                 return c.getLong(0);
@@ -233,15 +279,20 @@ public class RecetaDao {
         return db.insertOrThrow("ingredientes", null, v);
     }
 
+    /**
+     * Elimina del catálogo los ingredientes que no están asociados a ninguna receta.
+     * @param db Instancia de la base de datos.
+     */
     private void borrarIngredientesSinUso(SQLiteDatabase db) {
         db.execSQL("DELETE FROM ingredientes WHERE id NOT IN "
                 + "(SELECT DISTINCT ingrediente_id FROM receta_ingrediente)");
     }
 
     /**
-     * Borra la receta. Por las llaves foráneas con ON DELETE CASCADE también se borran
-     * sus ingredientes, su favorito y sus comidas del planificador.
-     * Regresa el nombre de la foto para que se borre el archivo.
+     * Elimina una receta de la base de datos.
+     * Por las llaves foráneas con ON DELETE CASCADE, también elimina sus referencias en favoritos y planificador.
+     * @param id ID de la receta a eliminar.
+     * @return El nombre del archivo de foto asociado si existe, para eliminarlo del almacenamiento.
      */
     public String eliminar(long id) {
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -264,7 +315,11 @@ public class RecetaDao {
 
     // ------------------------------------------------------------------ favoritos
 
-    /** Marca o desmarca la receta como favorita. Regresa el nuevo estado. */
+    /**
+     * Marca o desmarca una receta como favorita.
+     * @param recetaId ID de la receta.
+     * @return true si la receta quedó marcada como favorita, false si fue quitada.
+     */
     public boolean alternarFavorita(long recetaId) {
         SQLiteDatabase db = helper.getWritableDatabase();
         int borrados = db.delete("favoritos", "receta_id = ?", new String[]{String.valueOf(recetaId)});
@@ -280,6 +335,10 @@ public class RecetaDao {
 
     // ------------------------------------------------------------------ ingredientes
 
+    /**
+     * Obtiene la lista completa de nombres de ingredientes únicos para el autocompletado en formularios.
+     * @return Lista de cadenas con los nombres de ingredientes.
+     */
     public List<String> nombresIngredientes() {
         List<String> nombres = new ArrayList<>();
         try (Cursor c = helper.getReadableDatabase().rawQuery(
@@ -291,7 +350,11 @@ public class RecetaDao {
         return nombres;
     }
 
-    /** Catálogo de ingredientes con cuántas recetas usan cada uno (LEFT JOIN + GROUP BY). */
+    /**
+     * Obtiene el catálogo de ingredientes indicando cuántas recetas registradas utilizan cada ingrediente.
+     * @param filtro Texto opcional para filtrar los ingredientes por nombre.
+     * @return Lista de objetos IngredienteCatalogo.
+     */
     public List<IngredienteCatalogo> catalogo(String filtro) {
         String sql = "SELECT i.id, i.nombre, COUNT(DISTINCT ri.receta_id) AS recetas "
                 + "FROM ingredientes i "
@@ -310,7 +373,11 @@ public class RecetaDao {
         return lista;
     }
 
-    /** Recetas que llevan un ingrediente. */
+    /**
+     * Obtiene la lista de recetas que contienen un ingrediente específico por su ID.
+     * @param ingredienteId ID del ingrediente a consultar.
+     * @return Lista de recetas que usan dicho ingrediente.
+     */
     public List<Receta> recetasConIngrediente(long ingredienteId) {
         List<Receta> lista = new ArrayList<>();
         try (Cursor c = helper.getReadableDatabase().rawQuery(

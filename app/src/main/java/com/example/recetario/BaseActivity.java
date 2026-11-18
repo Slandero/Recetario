@@ -20,11 +20,15 @@ public abstract class BaseActivity extends Activity {
     protected Preferencias prefs;
     private boolean oscuroAplicado;
 
+    /**
+     * Inicializa la actividad aplicando la preferencia del tema (claro u oscuro) antes del layout.
+     * Habilita el botón de navegación hacia atrás en la barra de acción si la subclase lo permite.
+     * @param savedInstanceState Estado guardado de la instancia.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         prefs = new Preferencias(this);
         oscuroAplicado = prefs.isModoOscuro();
-        // El tema se tiene que poner antes de super.onCreate() y setContentView()
         setTheme(oscuroAplicado ? R.style.Tema_Recetario_Oscuro : R.style.Tema_Recetario);
         super.onCreate(savedInstanceState);
         ActionBar barra = getActionBar();
@@ -33,6 +37,10 @@ public abstract class BaseActivity extends Activity {
         }
     }
 
+    /**
+     * Verifica si la preferencia de tema cambió mientras la pantalla estaba en segundo plano.
+     * Si cambió, recrea la actividad para aplicar los nuevos colores.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -42,10 +50,9 @@ public abstract class BaseActivity extends Activity {
     }
 
     /**
-     * Desde Android 15 (targetSdk 35 o más) la ventana se dibuja de orilla a orilla y el contenido
-     * queda debajo de la barra de acción y de la barra de navegación. Con fitsSystemWindows la vista
-     * raíz de cada pantalla recibe ese espacio como padding (y también el del teclado).
-     * En versiones anteriores el sistema ya acomoda el contenido y el padding queda en 0.
+     * Establece la vista de contenido e indica fitsSystemWindows en la vista raíz
+     * para asegurar el comportamiento Edge-to-Edge adecuado en Android 15+.
+     * @param layoutResID Identificador del recurso de diseño layout.
      */
     @Override
     public void setContentView(int layoutResID) {
@@ -57,11 +64,20 @@ public abstract class BaseActivity extends Activity {
         }
     }
 
-    /** La pantalla principal no muestra la flecha de regresar. */
+    /**
+     * Determina si se debe mostrar la flecha de regreso en la barra de acción.
+     * Las subclases pueden sobrescribirlo (ej. MainActivity retorna false).
+     * @return true si se muestra la flecha de regreso.
+     */
     protected boolean mostrarRegresar() {
         return true;
     }
 
+    /**
+     * Maneja la pulsación de opciones de menú. Cierra la actividad si se presiona el botón Home/Atrás.
+     * @param item Elemento de menú seleccionado.
+     * @return true si el evento fue procesado.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -71,17 +87,29 @@ public abstract class BaseActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Muestra un mensaje flotante Toast breve al usuario.
+     * @param mensaje Texto del mensaje.
+     */
     protected void aviso(String mensaje) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Convierte un valor en densidad de píxeles independientes (dp) a píxeles reales (px).
+     * @param valor Valor en dp.
+     * @return Equivalente en píxeles.
+     */
     protected int dp(int valor) {
         return Math.round(valor * getResources().getDisplayMetrics().density);
     }
 
-    /** Lee un color del tema actual (por ejemplo R.attr.colorTarjeta). */
+    /**
+     * Obtiene el valor entero de un color definido en el tema actual (ej. colorTarjeta).
+     * @param atributo Atributo de recurso del tema (ej. R.attr.colorTarjeta).
+     * @return Color entero parseado.
+     */
     protected int colorDelTema(int atributo) {
-        // obtainStyledAttributes también funciona cuando el atributo apunta a un selector de colores
         TypedArray a = obtainStyledAttributes(new int[]{atributo});
         try {
             return a.getColor(0, 0xFF5B4F8F);

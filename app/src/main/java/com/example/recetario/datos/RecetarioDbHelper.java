@@ -24,7 +24,12 @@ public class RecetarioDbHelper extends SQLiteOpenHelper {
     private static RecetarioDbHelper instancia;
     private final Context contexto;
 
-    /** Una sola instancia para toda la app (evita abrir la BD varias veces). */
+    /**
+     * Retorna la instancia única (Singleton) del Helper de la base de datos.
+     * Previene la apertura concurrente de múltiples conexiones a la misma base de datos.
+     * @param c Contexto de la aplicación.
+     * @return Instancia única de RecetarioDbHelper.
+     */
     public static synchronized RecetarioDbHelper get(Context c) {
         if (instancia == null) {
             instancia = new RecetarioDbHelper(c.getApplicationContext());
@@ -32,25 +37,44 @@ public class RecetarioDbHelper extends SQLiteOpenHelper {
         return instancia;
     }
 
+    /**
+     * Constructor privado para forzar el patrón Singleton.
+     * @param contexto Contexto de la aplicación.
+     */
     private RecetarioDbHelper(Context contexto) {
         super(contexto, NOMBRE_BD, null, VERSION);
         this.contexto = contexto;
     }
 
+    /**
+     * Habilita las restricciones de claves foráneas (Foreign Keys) en SQLite.
+     * Requerido para soportar ON DELETE CASCADE y ON DELETE RESTRICT.
+     * @param db Instancia de la base de datos SQLite.
+     */
     @Override
     public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
-        // SQLite trae las llaves foráneas apagadas; sin esto no funcionan ON DELETE CASCADE ni RESTRICT
         db.setForeignKeyConstraintsEnabled(true);
     }
 
+    /**
+     * Se ejecuta la primera vez que se crea la base de datos.
+     * Carga el esquema SQL de las 6 tablas e inserta los datos iniciales de las recetas de semilla.
+     * @param db Instancia de la base de datos SQLite recién creada.
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // onCreate ya corre dentro de una transacción
         ejecutarScript(db, R.raw.esquema);
         ejecutarScript(db, R.raw.semilla);
     }
 
+    /**
+     * Se ejecuta cuando se incrementa la versión de la base de datos.
+     * Ejecuta la migración de esquemas sin perder los datos existentes del usuario.
+     * @param db Instancia de la base de datos SQLite.
+     * @param versionAnterior Número de versión previo.
+     * @param versionNueva Número de versión nuevo.
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int versionAnterior, int versionNueva) {
         if (versionAnterior < 2) {
@@ -68,12 +92,22 @@ public class RecetarioDbHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Lee un archivo .sql de la carpeta res/raw, lo divide en sentencias individuales y las ejecuta.
+     * @param db Instancia de la base de datos donde se ejecutarán las sentencias.
+     * @param recursoRaw Identificador del recurso raw (ej. R.raw.esquema).
+     */
     private void ejecutarScript(SQLiteDatabase db, int recursoRaw) {
         for (String sentencia : ScriptSql.dividir(leerRaw(recursoRaw))) {
             db.execSQL(sentencia);
         }
     }
 
+    /**
+     * Lee el contenido completo de un archivo en res/raw y lo convierte a una cadena UTF-8.
+     * @param recursoRaw Identificador del recurso en res/raw.
+     * @return El contenido en texto plano del archivo de recurso.
+     */
     private String leerRaw(int recursoRaw) {
         try (InputStream in = contexto.getResources().openRawResource(recursoRaw);
              ByteArrayOutputStream out = new ByteArrayOutputStream()) {

@@ -69,6 +69,11 @@ public class FormRecetaActivity extends BaseActivity {
     private ArrayAdapter<String> adNombresIngredientes;
     private String[] unidades;
 
+    /**
+     * Inicializa las vistas del formulario de recetas, adaptadores de Spinners y listeners.
+     * Carga los datos existentes si se trata de una edición o asigna porciones predeterminadas si es nueva.
+     * @param savedInstanceState Estado guardado en cambios de configuración.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,15 +127,12 @@ public class FormRecetaActivity extends BaseActivity {
             }
         });
 
-        // Si Android volvió a crear la pantalla (por ejemplo, la cerró mientras estaba abierta la cámara),
-        // los renglones de ingredientes se restauran de lo que el usuario ya había escrito
         boolean restaurar = savedInstanceState != null && savedInstanceState.containsKey(ESTADO_ING_NOMBRES);
         if (recetaId > 0) {
             setTitle(R.string.editar_receta);
             cargar(!restaurar);
         } else {
             setTitle(R.string.nueva_receta);
-            // Preferencias: las recetas nuevas empiezan con las porciones predeterminadas
             etPorciones.setText(String.valueOf(prefs.getPorciones()));
             if (!restaurar) {
                 for (int i = 0; i < 3; i++) {
@@ -148,6 +150,10 @@ public class FormRecetaActivity extends BaseActivity {
         mostrarFoto();
     }
 
+    /**
+     * Carga los datos de una receta existente para su edición.
+     * @param conIngredientes Indica si también se deben poblar los renglones de ingredientes desde la BD.
+     */
     private void cargar(boolean conIngredientes) {
         Receta r = dao.obtener(recetaId);
         if (r == null) {
@@ -173,6 +179,10 @@ public class FormRecetaActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Restaura los renglones de ingredientes previamente escritos tras una recreación de la pantalla.
+     * @param estado Bundle con las listas de nombres, cantidades y unidades.
+     */
     private void restaurarFilas(Bundle estado) {
         ArrayList<String> nombres = estado.getStringArrayList(ESTADO_ING_NOMBRES);
         ArrayList<String> cantidades = estado.getStringArrayList(ESTADO_ING_CANTIDADES);
@@ -193,7 +203,11 @@ public class FormRecetaActivity extends BaseActivity {
         }
     }
 
-    /** Agrega un renglón de ingrediente: nombre (con autocompletado), cantidad y unidad. */
+    /**
+     * Infla e inserta un nuevo renglón de ingrediente dinámico en el contenedor de la pantalla.
+     * @param ir Ingrediente con datos iniciales (null para renglón vacío).
+     * @return La vista del renglón creado.
+     */
     private View agregarFila(IngredienteReceta ir) {
         final View fila = getLayoutInflater().inflate(R.layout.item_ingrediente_form, contIngredientes, false);
         AutoCompleteTextView actvNombre = (AutoCompleteTextView) fila.findViewById(R.id.actvNombre);
@@ -229,6 +243,9 @@ public class FormRecetaActivity extends BaseActivity {
 
     // ------------------------------------------------------------------ foto
 
+    /**
+     * Muestra un diálogo de opciones para la fotografía (Tomar foto con cámara, Elegir de galería o Quitar foto).
+     */
     private void opcionesFoto() {
         List<String> opciones = new ArrayList<>();
         opciones.add(getString(R.string.tomar_foto));
@@ -253,6 +270,9 @@ public class FormRecetaActivity extends BaseActivity {
                 .show();
     }
 
+    /**
+     * Inicia el Intent para capturar una imagen usando la aplicación de cámara nativa.
+     */
     private void abrirCamara() {
         File destino = FotoStorage.archivoCamara(this);
         destino.delete();
@@ -268,6 +288,9 @@ public class FormRecetaActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Inicia el Intent para seleccionar una imagen desde la galería.
+     */
     private void abrirGaleria() {
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.setType("image/*");
@@ -279,6 +302,12 @@ public class FormRecetaActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Procesa la respuesta tras capturar con la cámara o seleccionar de la galería.
+     * @param requestCode Código de petición.
+     * @param resultCode Código de resultado.
+     * @param data Intent con los datos de respuesta.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -297,7 +326,11 @@ public class FormRecetaActivity extends BaseActivity {
         }
     }
 
-    /** Reducir y guardar la foto puede tardar, así que se hace fuera del hilo principal. */
+    /**
+     * Ejecuta la compresión, escalado y rotación de la fotografía en un hilo en segundo plano.
+     * @param uri URI de la galería (null si proviene de la cámara).
+     * @param archivo Archivo de la cámara (null si proviene de la galería).
+     */
     private void procesarFoto(final Uri uri, final File archivo) {
         aviso(getString(R.string.guardando_foto));
         new Thread(new Runnable() {
@@ -334,7 +367,10 @@ public class FormRecetaActivity extends BaseActivity {
         }).start();
     }
 
-    /** Cambia la foto; si la anterior era nueva (no la original) se borra el archivo. */
+    /**
+     * Reemplaza la referencia a la foto actual por una nueva y elimina la temporal previa.
+     * @param nueva Nombre del nuevo archivo de foto (o null para quitar).
+     */
     private void reemplazarFoto(String nueva) {
         if (fotoActual != null && !fotoActual.equals(fotoOriginal)) {
             FotoStorage.eliminar(this, fotoActual);
@@ -343,6 +379,9 @@ public class FormRecetaActivity extends BaseActivity {
         mostrarFoto();
     }
 
+    /**
+     * Muestra la foto actual en el ImageView o restablece el contenedor indicando ausencia de foto.
+     */
     private void mostrarFoto() {
         Bitmap bmp = FotoStorage.cargar(this, fotoActual, getResources().getDisplayMetrics().widthPixels);
         if (bmp != null) {
@@ -358,6 +397,9 @@ public class FormRecetaActivity extends BaseActivity {
 
     // ------------------------------------------------------------------ guardar
 
+    /**
+     * Valida los campos del formulario, construye el objeto Receta y lo guarda en la BD mediante el DAO.
+     */
     private void guardar() {
         String nombre = etNombre.getText().toString().trim();
         if (nombre.isEmpty()) {
@@ -383,7 +425,7 @@ public class FormRecetaActivity extends BaseActivity {
             String textoCant = etCant.getText().toString().trim().replace(',', '.');
             String unidad = (String) spUni.getSelectedItem();
             if (ing.isEmpty() && textoCant.isEmpty()) {
-                continue; // renglón vacío
+                continue;
             }
             if (ing.isEmpty()) {
                 actv.setError(getString(R.string.error_ingrediente));
@@ -434,7 +476,6 @@ public class FormRecetaActivity extends BaseActivity {
             aviso(getString(R.string.error_guardar, e.getMessage()));
             return;
         }
-        // La foto anterior ya no se usa: se borra el archivo
         if (fotoOriginal != null && !fotoOriginal.equals(fotoActual)) {
             FotoStorage.eliminar(this, fotoOriginal);
         }
@@ -448,6 +489,12 @@ public class FormRecetaActivity extends BaseActivity {
         finish();
     }
 
+    /**
+     * Parsea un entero desde un EditText o retorna un valor por defecto si falla.
+     * @param et EditText con el texto.
+     * @param porDefecto Valor devuelto si ocurre un error.
+     * @return El valor entero parseado.
+     */
     private static int entero(EditText et, int porDefecto) {
         try {
             return Integer.parseInt(et.getText().toString().trim());
@@ -456,12 +503,22 @@ public class FormRecetaActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Infla el menú de la barra superior para guardar la receta.
+     * @param menu Menú a inflar.
+     * @return true para mostrarlo.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_form, menu);
         return true;
     }
 
+    /**
+     * Maneja el clic en la opción de guardar del menú superior.
+     * @param item Elemento seleccionado.
+     * @return true si fue procesado.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.accion_guardar) {
@@ -471,6 +528,10 @@ public class FormRecetaActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Preserva el estado de la foto y los ingredientes capturados en el formulario ante giros o pausado.
+     * @param outState Bundle de salida.
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -491,9 +552,11 @@ public class FormRecetaActivity extends BaseActivity {
         outState.putStringArrayList(ESTADO_ING_UNIDADES, unidadesFila);
     }
 
+    /**
+     * Limpia fotos temporales huérfanas si la actividad finaliza sin haber guardado los cambios.
+     */
     @Override
     protected void onDestroy() {
-        // Si se sale sin guardar, se borra la foto nueva para no dejar archivos huérfanos
         if (isFinishing() && !guardado && fotoActual != null && !fotoActual.equals(fotoOriginal)) {
             FotoStorage.eliminar(this, fotoActual);
         }

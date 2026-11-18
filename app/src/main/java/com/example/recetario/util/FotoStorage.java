@@ -27,6 +27,12 @@ public final class FotoStorage {
     private FotoStorage() {
     }
 
+    /**
+     * Retorna la carpeta donde se almacenan las fotografías de la app (/files/fotos/).
+     * Si no existe, la crea.
+     * @param c Contexto de la aplicación.
+     * @return Objeto File de la carpeta.
+     */
     public static File carpeta(Context c) {
         File dir = new File(c.getFilesDir(), CARPETA);
         if (!dir.exists() && !dir.mkdirs()) {
@@ -35,11 +41,21 @@ public final class FotoStorage {
         return dir;
     }
 
+    /**
+     * Retorna un archivo dentro de la carpeta de fotos.
+     * @param c Contexto de la aplicación.
+     * @param nombre Nombre del archivo.
+     * @return Objeto File de la ruta de la foto.
+     */
     public static File archivo(Context c, String nombre) {
         return new File(carpeta(c), nombre);
     }
 
-    /** Archivo temporal donde la app de cámara deja la foto (lo comparte FotoProvider). */
+    /**
+     * Retorna el archivo temporal donde la app de cámara guarda la captura tomada.
+     * @param c Contexto de la aplicación.
+     * @return Objeto File del archivo temporal de la cámara.
+     */
     public static File archivoCamara(Context c) {
         File dir = new File(c.getCacheDir(), "camara");
         if (!dir.exists()) {
@@ -48,7 +64,13 @@ public final class FotoStorage {
         return new File(dir, "captura.jpg");
     }
 
-    /** Copia una imagen elegida de la galería al almacenamiento de la app. Regresa el nombre del archivo. */
+    /**
+     * Copia una imagen desde una URI de la galería al almacenamiento privado interno de la app.
+     * @param c Contexto de la aplicación.
+     * @param uri URI de la imagen seleccionada.
+     * @return El nombre único del archivo guardado.
+     * @throws IOException Si ocurre un error de lectura/escritura.
+     */
     public static String guardarDesdeUri(Context c, Uri uri) throws IOException {
         File temporal = File.createTempFile("foto", ".tmp", c.getCacheDir());
         try {
@@ -65,7 +87,13 @@ public final class FotoStorage {
         }
     }
 
-    /** Reduce, endereza (EXIF) y guarda como JPEG. Regresa el nombre del archivo. */
+    /**
+     * Procesa, escala, endereza (metadatos EXIF) y guarda una imagen como JPEG en la carpeta de fotos.
+     * @param c Contexto de la aplicación.
+     * @param origen Archivo original de la foto.
+     * @return El nombre único del archivo generado.
+     * @throws IOException Si la imagen es inválida o falla la compresión.
+     */
     public static String guardarDesdeArchivo(Context c, File origen) throws IOException {
         BitmapFactory.Options opciones = new BitmapFactory.Options();
         opciones.inJustDecodeBounds = true;
@@ -103,7 +131,13 @@ public final class FotoStorage {
         return nombre;
     }
 
-    /** Carga la foto reducida al tamaño que se va a mostrar (para no gastar memoria). */
+    /**
+     * Carga y decodifica un Bitmap de la foto ajustado al tamaño especificado para evitar consumo excesivo de memoria.
+     * @param c Contexto de la aplicación.
+     * @param nombre Nombre del archivo de la foto.
+     * @param ladoPx Lado máximo en píxeles al que se escalará la imagen.
+     * @return Objeto Bitmap cargado o null si no existe.
+     */
     public static Bitmap cargar(Context c, String nombre, int ladoPx) {
         if (nombre == null) {
             return null;
@@ -120,17 +154,32 @@ public final class FotoStorage {
         return BitmapFactory.decodeFile(f.getPath(), opciones);
     }
 
+    /**
+     * Elimina el archivo de la foto del almacenamiento interno si existe.
+     * @param c Contexto de la aplicación.
+     * @param nombre Nombre del archivo a eliminar.
+     */
     public static void eliminar(Context c, String nombre) {
         if (nombre != null) {
             archivo(c, nombre).delete();
         }
     }
 
+    /**
+     * Cuenta cuántas fotos existen actualmente en la carpeta de la app.
+     * @param c Contexto de la aplicación.
+     * @return Número de archivos de fotos.
+     */
     public static int contarFotos(Context c) {
         File[] archivos = carpeta(c).listFiles();
         return archivos == null ? 0 : archivos.length;
     }
 
+    /**
+     * Calcula el tamaño total en bytes ocupado por todas las fotos guardadas.
+     * @param c Contexto de la aplicación.
+     * @return Tamaño acumulado en bytes.
+     */
     public static long tamanoTotal(Context c) {
         long total = 0;
         File[] archivos = carpeta(c).listFiles();
@@ -142,6 +191,13 @@ public final class FotoStorage {
         return total;
     }
 
+    /**
+     * Calcula el factor de muestreo (inSampleSize) para reducir las dimensiones de decodificación.
+     * @param ancho Ancho original de la imagen.
+     * @param alto Alto original de la imagen.
+     * @param ladoMaximo Dimensión máxima deseada.
+     * @return Factor de submuestreo de valor potencia de 2.
+     */
     private static int muestreo(int ancho, int alto, int ladoMaximo) {
         int muestra = 1;
         while (Math.max(ancho, alto) / (muestra * 2) >= ladoMaximo) {
@@ -150,6 +206,11 @@ public final class FotoStorage {
         return muestra;
     }
 
+    /**
+     * Obtiene los grados de rotación requeridos a partir de la orientación EXIF de la imagen.
+     * @param ruta Ruta del archivo de imagen.
+     * @return Grados de rotación (0, 90, 180 o 270).
+     */
     private static int gradosExif(String ruta) {
         try {
             ExifInterface exif = new ExifInterface(ruta);
@@ -169,6 +230,12 @@ public final class FotoStorage {
         }
     }
 
+    /**
+     * Copia datos desde un InputStream a un OutputStream utilizando un buffer.
+     * @param in Flujo de entrada.
+     * @param out Flujo de salida.
+     * @throws IOException Si ocurre un error en la transferencia.
+     */
     private static void copiar(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[8192];
         int leidos;

@@ -13,6 +13,12 @@ public final class ScriptSql {
     private ScriptSql() {
     }
 
+    /**
+     * Parsea una cadena con múltiples instrucciones SQL dividiéndolas por punto y coma (;).
+     * Ignora comentarios prefijados con '--' y respeta comillas de cadenas.
+     * @param script Cadena con el contenido del archivo .sql.
+     * @return Lista de sentencias SQL individuales para ejecutar.
+     */
     public static List<String> dividir(String script) {
         List<String> sentencias = new ArrayList<>();
         StringBuilder actual = new StringBuilder();
@@ -44,6 +50,11 @@ public final class ScriptSql {
         return sentencias;
     }
 
+    /**
+     * Agrega una sentencia no vacía a la lista acumulada de sentencias.
+     * @param sentencias Lista acumuladora.
+     * @param sb StringBuilder con el texto actual de la sentencia.
+     */
     private static void agregar(List<String> sentencias, StringBuilder sb) {
         String s = sb.toString().trim();
         if (!s.isEmpty()) {

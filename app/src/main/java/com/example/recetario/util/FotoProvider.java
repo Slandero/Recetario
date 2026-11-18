@@ -19,15 +19,31 @@ import java.io.FileNotFoundException;
  */
 public class FotoProvider extends ContentProvider {
 
+    /**
+     * Retorna la URI del proveedor de contenido para compartir el archivo de la cámara.
+     * @param c Contexto de la aplicación.
+     * @return Objeto Uri accesible por la app de cámara.
+     */
     public static Uri uriCamara(Context c) {
         return Uri.parse("content://" + c.getPackageName() + ".fotos/captura.jpg");
     }
 
+    /**
+     * Inicialización del proveedor de contenido.
+     * @return true si se inicializa correctamente.
+     */
     @Override
     public boolean onCreate() {
         return true;
     }
 
+    /**
+     * Abre y retorna el descriptor del archivo especificado por la URI.
+     * @param uri URI solicitada por la aplicación externa de cámara.
+     * @param mode Modo de acceso (lectura/escritura).
+     * @return ParcelFileDescriptor del archivo temporal de la cámara.
+     * @throws FileNotFoundException Si el recurso no es captura.jpg.
+     */
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
         if (!"captura.jpg".equals(uri.getLastPathSegment())) {
@@ -37,11 +53,25 @@ public class FotoProvider extends ContentProvider {
         return ParcelFileDescriptor.open(archivo, ParcelFileDescriptor.parseMode(mode));
     }
 
+    /**
+     * Retorna el tipo MIME del archivo compartido (image/jpeg).
+     * @param uri URI solicitada.
+     * @return Tipo MIME en cadena.
+     */
     @Override
     public String getType(Uri uri) {
         return "image/jpeg";
     }
 
+    /**
+     * Consulta de metadatos básicos del archivo compartido (nombre y tamaño).
+     * @param uri URI del recurso.
+     * @param projection Columnas solicitadas.
+     * @param selection Selección SQL.
+     * @param selectionArgs Argumentos de selección.
+     * @param sortOrder Orden de resultados.
+     * @return Cursor con los metadatos del archivo.
+     */
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         File archivo = FotoStorage.archivoCamara(getContext());
@@ -50,16 +80,25 @@ public class FotoProvider extends ContentProvider {
         return cursor;
     }
 
+    /**
+     * Inserción no soportada en este proveedor simplificado.
+     */
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Borrado de archivos del proveedor.
+     */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         return 0;
     }
 
+    /**
+     * Actualización de registros del proveedor.
+     */
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;

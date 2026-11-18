@@ -63,6 +63,12 @@ public final class ListaCompras {
     private ListaCompras() {
     }
 
+    /**
+     * Agrupa y consolida una lista de filas de ingredientes sumando las cantidades.
+     * Convierte gramos a kilos y mililitros a litros cuando corresponde.
+     * @param filas Lista de objetos Fila provenientes del DAO.
+     * @return Lista de objetos Item formateados y ordenados alfabéticamente para la interfaz de usuario.
+     */
     public static List<Item> agrupar(List<Fila> filas) {
         Map<String, Acumulado> mapa = new LinkedHashMap<>();
         for (Fila f : filas) {
@@ -125,6 +131,12 @@ public final class ListaCompras {
         return items;
     }
 
+    /**
+     * Une una lista de cadenas insertando un separador entre ellas.
+     * @param partes Lista de subcadenas.
+     * @param separador Delimitador de unión.
+     * @return Cadena concatenada.
+     */
     private static String unir(List<String> partes, String separador) {
         StringBuilder sb = new StringBuilder();
         for (String p : partes) {

@@ -42,6 +42,11 @@ public class RecetaAdapter extends BaseAdapter {
         }
     };
 
+    /**
+     * Constructor del adaptador que inicializa la caché LRU de imágenes.
+     * @param contexto Contexto de la aplicación.
+     * @param listener Callback de escucha para alternar estado de favorita.
+     */
     public RecetaAdapter(Context contexto, OnFavoritaListener listener) {
         this.contexto = contexto;
         this.inflater = LayoutInflater.from(contexto);
@@ -51,21 +56,39 @@ public class RecetaAdapter extends BaseAdapter {
         this.radio = 14 * densidad;
     }
 
+    /**
+     * Actualiza la lista de recetas a mostrar y notifica al ListView de los cambios.
+     * @param recetas Nueva lista de recetas.
+     */
     public void setRecetas(List<Receta> recetas) {
         this.recetas = recetas;
         notifyDataSetChanged();
     }
 
+    /**
+     * Retorna la cantidad de elementos en la lista.
+     * @return Número de recetas.
+     */
     @Override
     public int getCount() {
         return recetas.size();
     }
 
+    /**
+     * Retorna la receta en una posición específica.
+     * @param position Índice de la lista.
+     * @return Objeto Receta en esa posición.
+     */
     @Override
     public Receta getItem(int position) {
         return recetas.get(position);
     }
 
+    /**
+     * Retorna el ID único de la receta en esa posición.
+     * @param position Índice de la lista.
+     * @return ID numérico de la receta.
+     */
     @Override
     public long getItemId(int position) {
         return recetas.get(position).id;
@@ -81,6 +104,13 @@ public class RecetaAdapter extends BaseAdapter {
         ImageButton favorita;
     }
 
+    /**
+     * Infla y recicla las vistas de cada tarjeta de receta en la lista (ViewHolder Pattern).
+     * @param position Posición del elemento.
+     * @param convertView Vista reciclada si existe.
+     * @param parent Vista padre (ListView).
+     * @return Vista configurada de la tarjeta de la receta.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Holder h;
@@ -132,6 +162,11 @@ public class RecetaAdapter extends BaseAdapter {
         return convertView;
     }
 
+    /**
+     * Carga la miniatura de la foto utilizando una caché LruCache para optimizar el rendimiento al desplazarse.
+     * @param foto Nombre del archivo de la foto.
+     * @return Bitmap de la miniatura o null si no existe.
+     */
     private Bitmap miniatura(String foto) {
         if (foto == null) {
             return null;

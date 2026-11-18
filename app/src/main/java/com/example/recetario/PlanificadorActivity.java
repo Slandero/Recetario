@@ -43,6 +43,10 @@ public class PlanificadorActivity extends BaseActivity {
     private TextView tvResumen;
     private LinearLayout contDias;
 
+    /**
+     * Inicializa la pantalla del planificador, recupera el lunes de la semana actual y asigna navegadores.
+     * @param savedInstanceState Estado guardado previamente.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,12 +91,19 @@ public class PlanificadorActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Refresca las vistas de la semana al volver a la pantalla.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         mostrar();
     }
 
+    /**
+     * Consulta las comidas agendadas en la semana actual y genera la vista dinámica para los 7 días.
+     * Permite visualizar y agregar múltiples platillos/bebidas por tiempo (Desayuno, Comida, Cena).
+     */
     private void mostrar() {
         tvSemana.setText(Semana.etiqueta(lunes));
         List<ComidaPlan> comidas = planDao.semana(lunes);
@@ -177,7 +188,6 @@ public class PlanificadorActivity extends BaseActivity {
                         cont.addView(fila);
                     }
 
-                    // Renglón para agregar otro platillo o bebida al mismo tiempo
                     View filaMas = inflater.inflate(R.layout.item_comida_plan, cont, false);
                     TextView tvTiempo = (TextView) filaMas.findViewById(R.id.tvTiempo);
                     TextView tvReceta = (TextView) filaMas.findViewById(R.id.tvReceta);
@@ -203,7 +213,12 @@ public class PlanificadorActivity extends BaseActivity {
         }
     }
 
-    /** Lista de recetas ordenada por tipo de comida (los desayunos primero). */
+    /**
+     * Muestra un diálogo de selección con todas las recetas disponibles para asignar a la fecha y tiempo dados.
+     * @param fecha Fecha ISO.
+     * @param tiempo Tiempo de comida (0, 1 o 2).
+     * @param actual Objeto ComidaPlan existente si se trata de un reemplazo (null para inserción).
+     */
     private void elegirReceta(final String fecha, final int tiempo, final ComidaPlan actual) {
         final List<Receta> recetas = recetaDao.buscar(null, -1, 0, false, Preferencias.ORDEN_NOMBRE);
         if (recetas.isEmpty()) {
@@ -239,6 +254,10 @@ public class PlanificadorActivity extends BaseActivity {
                 .show();
     }
 
+    /**
+     * Muestra el diálogo de opciones para una entrada específica (Ver receta, Cambiar receta, Ajustar porciones o Quitar).
+     * @param cp Entrada seleccionada del planificador.
+     */
     private void opcionesComida(final ComidaPlan cp) {
         String[] opciones = {
                 getString(R.string.ver_receta),
@@ -272,6 +291,10 @@ public class PlanificadorActivity extends BaseActivity {
                 .show();
     }
 
+    /**
+     * Muestra un selector numérico (NumberPicker) para cambiar las porciones de la receta agendada.
+     * @param cp Entrada seleccionada del planificador.
+     */
     private void elegirPorciones(final ComidaPlan cp) {
         final NumberPicker np = new NumberPicker(this);
         np.setMinValue(Preferencias.PORCIONES_MIN);
@@ -298,12 +321,22 @@ public class PlanificadorActivity extends BaseActivity {
                 .show();
     }
 
+    /**
+     * Infla el menú superior del planificador.
+     * @param menu Objeto Menu.
+     * @return true para mostrarlo.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_planificador, menu);
         return true;
     }
 
+    /**
+     * Maneja las opciones del menú superior (Ir a semana actual o Vaciar semana).
+     * @param item Elemento de menú seleccionado.
+     * @return true si fue procesado.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -329,6 +362,10 @@ public class PlanificadorActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Preserva la fecha del lunes de la semana que se está visualizando.
+     * @param outState Bundle de salida.
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

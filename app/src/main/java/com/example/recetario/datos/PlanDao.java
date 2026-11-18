@@ -11,16 +11,27 @@ import com.example.recetario.util.Semana;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Planificador semanal y lista de ingredientes. */
+/**
+ * Objeto de Acceso a Datos (DAO) para gestionar las operaciones del planificador semanal
+ * y el cálculo de la lista de compras de la semana.
+ */
 public class PlanDao {
 
     private final RecetarioDbHelper helper;
 
+    /**
+     * Constructor del DAO que obtiene la instancia Singleton del Helper de la BD.
+     * @param c Contexto de la aplicación.
+     */
     public PlanDao(Context c) {
         helper = RecetarioDbHelper.get(c);
     }
 
-    /** Comidas de la semana que empieza en lunes. */
+    /**
+     * Obtiene la lista de platillos y bebidas agendados para la semana que inicia en la fecha lunes dada.
+     * @param lunes Fecha de inicio de la semana en formato YYYY-MM-DD.
+     * @return Lista de objetos ComidaPlan ordenada por fecha y tiempo de comida.
+     */
     public List<ComidaPlan> semana(String lunes) {
         String domingo = Semana.sumarDias(lunes, 6);
         List<ComidaPlan> lista = new ArrayList<>();
@@ -47,7 +58,12 @@ public class PlanDao {
         return lista;
     }
 
-    /** Nombres de las recetas agregadas en cada tiempo del día (null si no hay ninguna). */
+    /**
+     * Obtiene una representación textual de las recetas asignadas en cada tiempo de un día específico.
+     * Concatenadas por comas si hay múltiples recetas en el mismo tiempo.
+     * @param fecha Fecha en formato YYYY-MM-DD.
+     * @return Arreglo de 3 cadenas (índice 0 = Desayuno, 1 = Comida, 2 = Cena).
+     */
     public String[] recetasDelDia(String fecha) {
         String[] nombres = new String[3];
         try (Cursor c = helper.getReadableDatabase().rawQuery(
@@ -67,7 +83,13 @@ public class PlanDao {
         return nombres;
     }
 
-    /** Agrega una receta/platillo/bebida a un día y tiempo de comida. */
+    /**
+     * Agrega una receta/platillo/bebida al planificador semanal para una fecha y tiempo específicos.
+     * @param fecha Fecha de la comida (YYYY-MM-DD).
+     * @param tiempo Tiempo de comida (0 = Desayuno, 1 = Comida, 2 = Cena).
+     * @param recetaId ID de la receta a agregar.
+     * @param porciones Número de porciones planificadas.
+     */
     public void asignar(String fecha, int tiempo, long recetaId, int porciones) {
         ContentValues v = new ContentValues();
         v.put("fecha", fecha);
@@ -77,33 +99,52 @@ public class PlanDao {
         helper.getWritableDatabase().insertOrThrow("plan_comidas", null, v);
     }
 
-    /** Reemplaza la receta de una entrada existente del planificador. */
+    /**
+     * Modifica la receta asignada en una entrada existente del planificador.
+     * @param id ID de la entrada en plan_comidas.
+     * @param recetaId Nuevo ID de la receta a asociar.
+     */
     public void cambiarReceta(long id, long recetaId) {
         ContentValues v = new ContentValues();
         v.put("receta_id", recetaId);
         helper.getWritableDatabase().update("plan_comidas", v, "id = ?", new String[]{String.valueOf(id)});
     }
 
+    /**
+     * Modifica el número de porciones de una entrada existente del planificador.
+     * @param id ID de la entrada en plan_comidas.
+     * @param porciones Nuevo número de porciones.
+     */
     public void cambiarPorciones(long id, int porciones) {
         ContentValues v = new ContentValues();
         v.put("porciones", porciones);
         helper.getWritableDatabase().update("plan_comidas", v, "id = ?", new String[]{String.valueOf(id)});
     }
 
+    /**
+     * Elimina una comida específica del planificador por su ID.
+     * @param id ID de la entrada en plan_comidas.
+     */
     public void quitar(long id) {
         helper.getWritableDatabase().delete("plan_comidas", "id = ?", new String[]{String.valueOf(id)});
     }
 
+    /**
+     * Elimina todas las comidas asignadas en la semana que inicia en el lunes dado.
+     * @param lunes Fecha de inicio de la semana (YYYY-MM-DD).
+     * @return El número de registros eliminados.
+     */
     public int limpiarSemana(String lunes) {
         return helper.getWritableDatabase().delete("plan_comidas", "fecha BETWEEN ? AND ?",
                 new String[]{lunes, Semana.sumarDias(lunes, 6)});
     }
 
     /**
-     * Ingredientes de todas las comidas de la semana (JOIN de 4 tablas).
-     * Cada cantidad se ajusta a las porciones planeadas:
-     * cantidad × porciones del plan / porciones de la receta
-     * y se suma por ingrediente y unidad.
+     * Calcula y suma los ingredientes requeridos para todas las comidas agendadas en la semana dada.
+     * Realiza un JOIN entre plan_comidas, recetas, receta_ingrediente e ingredientes, escalando
+     * la cantidad según porciones planificadas vs porciones base de cada receta.
+     * @param lunes Fecha de inicio de la semana (YYYY-MM-DD).
+     * @return Lista de objetos Fila con el total acumulado por ingrediente y unidad.
      */
     public List<ListaCompras.Fila> ingredientesSemana(String lunes) {
         String domingo = Semana.sumarDias(lunes, 6);
